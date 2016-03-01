@@ -11,14 +11,43 @@ class MoviesController < ApplicationController
   end
 
   def index
-    @movies = Movie.order(params[:sort])
-    @all_ratings = ['G','PG','PG-13','R']
+    @sort = params[:sort]
+
+    if params[:sort]
+      session[:sort] = @sort
+    end
+    #Part1
     
-    if params[:sort] == 'title'
+    
+    
+    if session[:sort] == 'title'
       @title_header = 'hilite'
-    elsif params[:sort] == 'release_date'
+    elsif session[:sort] == 'release_date'
       @release_header ='hilite'
     end
+    
+    #Part2
+    if params[:ratings]
+      @selected_ratings = []
+      ratings_hash = {}
+      
+      params[:ratings].keys.each do |rating|
+        @selected_ratings.push(rating)
+        ratings_hash[rating] = rating
+      end
+      
+      session[:ratings] = ratings_hash 
+      puts @selected_ratings
+    elsif session[:ratings]
+      
+    end
+    @movies = Movie.order(session[:sort])
+    
+    
+  
+    
+    @all_ratings = ['G','PG','PG-13','R']  
+      
   end
   
  
