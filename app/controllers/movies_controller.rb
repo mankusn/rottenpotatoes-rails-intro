@@ -22,17 +22,17 @@ class MoviesController < ApplicationController
       redirect_to movies_path(:sort=>session[:sort], :ratings=>session[:ratings])
     end
     @all_ratings.each do |rate|
-      if !params[:ratings]
+      if !@ratings
         if !session[:ratings]
           @ratings_hash[rate] = true
         elsif session[:ratings].has_key?(rate)
           @selected_ratings.push(rate)
           @ratings_hash[rate] = true 
         end 
-      elsif params[:ratings].has_key?(rate)
+      elsif @ratings.has_key?(rate)
         @selected_ratings.push(rate)
         @ratings_hash[rate] = true
-        session[:ratings] = params[:ratings]
+        session[:ratings] = @ratings
         
       end
      end
@@ -42,7 +42,6 @@ class MoviesController < ApplicationController
       session[:sort] = @sort
       if session[:ratings]
         @movies =Movie.all.order(session[:sort]).where(:rating => @ratings_hash.keys)
-        #redirect_to movies_path(session[:sort], session[:ratings])
       elsif !session[:ratings]
         @movies = Movie.order(session[:sort])
         
@@ -61,19 +60,8 @@ class MoviesController < ApplicationController
       elsif session[:sort] == 'release_date'
         @release_header ='hilite'
       end
-    end
-    
-    
-    session[:ratings] = @ratings_hash 
-    if session[:ratings]
-      #flash.keep
-      #redirect_to movies_path(session[:sort], session[:ratings])
-    end
-    
-  
-    
-    
-     
+    end   
+    session[:ratings] = @ratings_hash    
   end
   
  
